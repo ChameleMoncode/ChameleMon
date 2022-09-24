@@ -2,7 +2,7 @@
 #define _FCMPLUS_H_
 
 #include "./FCMPlus_sketch.h"
-#include "./our_heavypart.h"
+#include "./HeavyPart.h"
 class FCMPlus
 {
 private:

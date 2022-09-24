@@ -27,7 +27,8 @@ using std::vector;
 /************************** Loading Traces ******************************/
 
 #define NUM_TRACE 12               // Number of traces in DATA directory
-#define TIMES 10
+#define TIMES 10                   // Times of each algorithm measuring the same
+                                   // trace using different hash function
 #define DATA_ROOT_15s "/data/data" // NUM_TRACE = 1, CAIDA
 
 struct SRCIP_TUPLE
@@ -80,45 +81,22 @@ uint32_t ReadTraces()
   printf("\n\n");
   return total_pck_num;
 }
-/********************************************************************/
-
-/************************** COMMON FUNCTIONS*************************/
-#define ROUND_2_INT(f) ((int)(f >= 0.0 ? (f + 0.5) : (f - 0.5)))
+/************************** PREDEFINED NUMBERS***********************/
 #define HH_THRESHOLD 500 // 20,000,000 * 0.0005 (0.05%)
 #define HC_THRESHOLD 250
 #define TOT_MEM 500
-/******************** Data Structures ****************************/
-// FCM-Sketch (8-ary)
-// FCM-Sketch is fully implementable on hardware switch.
+/************************** COMMON FUNCTIONS*************************/
+#define ROUND_2_INT(f) ((int)(f >= 0.0 ? (f + 0.5) : (f - 0.5)))
 
-#define FCMSK_DEPTH 2 // number of trees
-#define FCMSK_LEVEL 3 // number of layer in trees
-#define FCMSK_K_ARY 8 // k-ary tree
+/********************************************************************/
 
-#if FCMSK_K_ARY == 2
-#define FCMSK_K_POW 1 // 2^1 = 2
-#elif FCMSK_K_ARY == 4
-#define FCMSK_K_POW 2 // 2^2 = 4
-#elif FCMSK_K_ARY == 8
-#define FCMSK_K_POW 3 // 2^3 = 8
-#elif FCMSK_K_ARY == 16
-#define FCMSK_K_POW 4 // 2^4 = 16
-#elif FCMSK_K_ARY == 32
-#define FCMSK_K_POW 5 // 2^5 = 32
-#endif
-
-/* Config using about 1.3MB */
-#define FCMSK_WL1 390400 // width of layer 1 (number of registers)
-#define FCMSK_WL2 48800 // width of layer 2 (number of registers)
-#define FCMSK_WL3 6100   // width of layer 3 (number of registers)
-
-typedef uint8_t FCMSK_C1; // 8-bit
-#define FCMSK_THL1 254
-typedef uint16_t FCMSK_C2; // 16-bit
-#define FCMSK_THL2 65534
-typedef uint32_t FCMSK_C3; // 32-bit
-#define FCMSK_EM_ITER 15   // Number of iteration of EM-Algorithm. You can control.
-
+// Fermat_tower
+#define TOT_MEMORY TOT_MEM * 1024 
+#define ELE_BUCKET 2500
+#define ELE_THRESHOLD 250
+#define USE_FING 0
+#define INIT ((uint32_t)random() % 800)
+#define FERMAT_EM_ITER 15
 /********************************************************************/
 
 // FCM+TopK (16-ary)
@@ -204,17 +182,10 @@ typedef uint32_t FCMPLUS_C3; // 32-bit
 #define FCMPLUS_EM_ITER 15   // Num.iteration of EM-Algorithm. You can control.
 /********************************************************************/
 
-// ElasticSketch
-// Here, ElasticSketch is P4-BMV2 (software) version, and doesn't consider the hardware restriction for Top-K algorithm.
-// Actually, its hardware implementation of Top-K algorithm will have a worse performance.
-// In software, each bucket of Top-K entry is of size 12-Byte (4B for val_all, and 4 + 4 for a key-value pair).
-// In Tofino, each bucket is 28 bits by approximated implementation.
-
-// Config using 1.375MB
 #define ELASTIC_BUCKET 3072
 #define ELASTIC_HEAVY_STAGE 4
 #define ELASTIC_WL TOT_MEM * 1024 - ELASTIC_BUCKET * ELASTIC_HEAVY_STAGE * 12
-#define ELASTIC_TOFINO 0 // 1 : Tofino, 0 : Software emulation
+#define ELASTIC_TOFINO 0 
 #define JUDGE_IF_SWAP_ELASTIC_P4(min_val, guard_val) ((guard_val >> 5) >= min_val)
 #define ELASTIC_EM_ITER 15 // Num.iteration of EM-Algorithm. You can control.
 struct Bucket
@@ -231,17 +202,17 @@ struct Bucket
 /********************************************************************/
 
 // MRAC
-#define MRAC_BYTES TOT_MEM * 1024 // 1.5 * 1024 * 1024 = 1.5MB
+#define MRAC_BYTES TOT_MEM * 1024 
 #define MRAC_EM_ITER 15   // Num.iteration of EM-Algorithm. You can control.
 /********************************************************************/
 
 // HYPERLOGLOG
-#define HLL_B 20       // number of registers, 2^20 * 1 Byte = 1.0MB
+#define HLL_B 20       
 #define HLL_REG_SIZE 8 // 8-bit register size
 /********************************************************************/
 
 // CUSKETCH (Count-Min + Conservative Update scheme)
-#define CU_BYTES TOT_MEM * 1024 // 1.5 * 1024 * 1024 = 1.5MB
+#define CU_BYTES TOT_MEM * 1024 
 #define CU_DEPTH 3       // depth of CU
 /********************************************************************/
 
@@ -254,25 +225,17 @@ typedef unsigned int uint;
 /********************************************************************/
 
 // UnivMon
+#define UNIV_BYTES TOT_MEM * 1024 // 1.5 * 1024 * 1024 = 1.5MB
+#define UNIV_BYTES_HC TOT_MEM * 1024
 #define UNIV_LEVEL 14
 #define UNIV_K 1000
 #define UNIV_ROW 5
-// #define UNIV_BYTES 1048576
-#define UNIV_BYTES TOT_MEM * 1024 // 1.5 * 1024 * 1024 = 1.5MB
-/********************************************************************/
+//#define UNIV_BYTES 1048576
 
-// Fermat_tower
-#define TOT_MEMORY TOT_MEM * 1024 
-#define ELE_BUCKET 2500
-#define ELE_THRESHOLD 250
-#define USE_FING 0
-#define INIT ((uint32_t)random() % 800)
-#define FERMAT_EM_ITER 15
 /********************************************************************/
 
 // Sieving
 #define SIEVING_MEM TOT_MEM * 1024
 
-#define WINDOW 2500 * 1024
-#define UNIV_BYTES_HC TOT_MEM * 1024
+/********************************************************************/
 #endif

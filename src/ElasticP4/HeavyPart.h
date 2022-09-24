@@ -51,7 +51,9 @@ public:
 
 		// swap
 		std::copy(swap_key_arr, swap_key_arr + 4, swap_key); // swap key
-		swap_val = buckets[pos].val; // swap val
+		swap_val = buckets[pos].guard_val >> 5; // swap val
+                //cout << "[heavy part] tot_val = " << buckets[pos].guard_val << endl;
+                //cout << "[heavy part] swap_val = " << swap_val << endl;
 		buckets[pos].key = *((uint32_t*)key);
 		buckets[pos].val += f;
 		return 2;

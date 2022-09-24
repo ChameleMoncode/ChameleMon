@@ -1,16 +1,16 @@
-#ifndef _ELASTIC_HEAVYPART_H_
-#define _ELASTIC_HEAVYPART_H_
+#ifndef _ELASTIC_OURHEAVYPART_H_
+#define _ELASTIC_OURHEAVYPART_H_
 
 #include "../common_func.h"
 #include "../Common/BOBHash32.h"
 
-class HeavyPart
+class ourHeavyPart
 {
 public:
 	Bucket buckets[FCMPLUS_BUCKET];
 
-	HeavyPart(){ clear(); }
-	~HeavyPart(){}
+	ourHeavyPart(){ clear(); }
+	~ourHeavyPart(){}
 
 	void clear(){
 		memset(buckets, 0, 12 * FCMPLUS_BUCKET);
@@ -32,8 +32,6 @@ public:
 		/* uint32_t to uint8_t array */
 		uint8_t swap_key_arr[4];
 		*(uint32_t*)swap_key_arr = buckets[pos].key;
-
-
 		if (buckets[pos].key == *((uint32_t*)key)){ // if matched
 			buckets[pos].val += f;
 			return 0;
@@ -45,13 +43,15 @@ public:
 			return 0;
 		}
 		// If non-matched item and non-empty : check swap or not
-		if (!JUDGE_IF_SWAP_ELASTIC_P4(buckets[pos].val, buckets[pos].guard_val)){
+		if (!JUDGE_IF_SWAP_FCMPLUS_P4(buckets[pos].val, buckets[pos].guard_val)){
 			return 1; // if not swap
 		}
 
 		// swap
-		std::copy(swap_key_arr, swap_key_arr + 4, swap_key); // swap key
-		swap_val = buckets[pos].val; // swap val
+		memcpy(swap_key, swap_key_arr, 4); // swap key
+		swap_val = buckets[pos].guard_val >> 5; // swap val
+                //cout << "[heavy part] tot_val = " << buckets[pos].guard_val << endl;
+                //cout << "[heavy part] swap_val = " << swap_val << endl;
 		buckets[pos].key = *((uint32_t*)key);
 		buckets[pos].val += f;
 		return 2;

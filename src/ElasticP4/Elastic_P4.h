@@ -20,6 +20,7 @@ public:
         }
         light_part = new LightPart();
         clear();
+        // printf("[ElasticP4_Simulator] Memory Usage : %2.2f MB\n", (ELASTIC_WL + ELASTIC_HEAVY_STAGE*ELASTIC_BUCKET * 12.0) / 1024 / 1024);
         // if (ELASTIC_TOFINO)
         //     printf("[ElasticP4_Tofino] Memory Usage : %2.2f MB\n", (ELASTIC_WL + ELASTIC_HEAVY_STAGE*ELASTIC_BUCKET * 28.0) / 1024 / 1024);
         // else
@@ -53,17 +54,18 @@ public:
             switch(result) {
                 case 0: return;
                 case 1:{ // key, f
+                    swap_val = 1;
                     continue;
                 }
                 case 2:{ // swap_key, swap_val
                     std::copy(swap_key, swap_key + 4, key);
-                    val = swap_val;
                     continue;
                 }
             }
         }
-
-        light_part->insert(key, val);
+        // if (swap_val)
+        //     cout << "[Elastic] swap_val = " << swap_val << endl; 
+        light_part->insert(key, swap_val);
         return;
     }
 
@@ -109,7 +111,6 @@ public:
         int num_light_nonzero = 0;
 
         int card = light_part->get_cardinality();
-        cout << "light_part" << card << endl;
         // step 1. collecting all items in Heavy Part
         set<uint32_t> checked_items;
         for (int i = 0; i < ELASTIC_HEAVY_STAGE; ++i){

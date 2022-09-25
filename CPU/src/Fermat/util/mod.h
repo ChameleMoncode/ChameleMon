@@ -5,7 +5,7 @@
 
 #include <cstdint>
 /* (a*b)%c */
-inline uint64_t mulMod(uint64_t a, uint64_t b, uint64_t c)
+uint64_t mulMod(uint64_t a, uint64_t b, uint64_t c)
 {
     //return (a*b)%c;
     uint64_t ans = 0;
@@ -24,7 +24,7 @@ inline uint64_t mulMod(uint64_t a, uint64_t b, uint64_t c)
 }
 
 /* (a^b)%c */
-inline uint64_t powMod(uint64_t a, uint64_t b, uint64_t c)
+uint64_t powMod(uint64_t a, uint64_t b, uint64_t c)
 {
     uint64_t ans = 1;
     uint64_t base = a; // a %c
@@ -38,12 +38,12 @@ inline uint64_t powMod(uint64_t a, uint64_t b, uint64_t c)
     return ans;
 }
 
-inline uint64_t mulMod32(uint64_t a, uint64_t b, uint64_t c)
+uint64_t mulMod32(uint64_t a, uint64_t b, uint64_t c)
 {
     return (a*b)%c;
 }
 
-inline uint64_t powMod32(uint64_t a, uint64_t b, uint64_t c)
+uint64_t powMod32(uint64_t a, uint64_t b, uint64_t c)
 {
     uint64_t ans = 1;
     uint64_t base = a; // a % c
@@ -57,7 +57,7 @@ inline uint64_t powMod32(uint64_t a, uint64_t b, uint64_t c)
     return ans;
 }
 
-inline uint32_t powMod16(uint32_t a, uint32_t b, uint32_t c) {
+uint32_t powMod16(uint32_t a, uint32_t b, uint32_t c) {
     uint32_t ans = 1;
     uint32_t base = a;
     while (b) {
@@ -72,7 +72,7 @@ inline uint32_t powMod16(uint32_t a, uint32_t b, uint32_t c) {
 
 #if 1
 
-inline void powModBatch(uint64_t *a, uint64_t b, uint64_t *c, uint64_t p) 
+void powModBatch(uint64_t *a, uint64_t b, uint64_t *c, uint64_t p) 
 {
     for(int i=0;i<8;i++)
     {

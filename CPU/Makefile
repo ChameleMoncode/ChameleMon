@@ -12,8 +12,8 @@ elasticp4: ./test/elasticp4.cpp
 	g++ -O2 -o ./out/elasticp4.out ./test/elasticp4.cpp 
 fcm: ./test/fcm.cpp
 	g++ -O2 -o ./out/fcm.out ./test/fcm.cpp -lpthread
-fermat: ./test/fermat.cpp ./src/Fermat/prime.cpp
-	g++ -O2 -o ./out/fermat.out ./test/fermat.cpp ./src/Fermat/prime.cpp
+fermat: ./test/fermat.cpp
+	g++ -O2 -o ./out/fermat.out ./test/fermat.cpp
 hashpipe: ./test/hashpipe.cpp
 	g++ -O2 -o ./out/hashpipe.out ./test/hashpipe.cpp
 mrac: ./test/mrac.cpp

@@ -1,7 +1,8 @@
-The source code of algorithm is under the folder ./src, while the test code is under the folder ./test. Here we test the accuracy of flow measurement and drop packets. 
-You can simply use command "make" to compile all the files and the target file are in folder ./out.
+The source code of algorithm is under the folder ./src/, while the test code is under the folder ./test/. Here we test the accuracy of flow measurement and drop packets. 
+You can simply use command "make" to compile all the files and the target file are in folder ./out/. 
 # Flow measurement
-We use different algorithm to complete six different tasks of flow measurement. By executing SKETCHNAME.out you can get the accuracy of measurement.
+We use different algorithm to complete six different tasks of flow measurement. By executing SKETCHNAME.out you can get the accuracy of measurement. You can use your 
+dataset, and put it in ./data/. There is a file 'common_func.h' under the folder ./src/, please change the file name in function ReadTraces(). And if you want to change the parameters of algorithms, change the macros in 'common_func.h'.
 # Drop packets
 The test_dropf_mem.out, test_flow_mem.out, test_perc_mem.out are the output files.
 

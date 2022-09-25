@@ -1,5 +1,7 @@
 #ifndef _MOD_H_
 #define _MOD_H_
+#include <iostream>
+using namespace std;
 
 /* Fast Modular Exponentiation */
 
@@ -36,6 +38,32 @@ uint64_t powMod(uint64_t a, uint64_t b, uint64_t c)
         b >>= 1;
     }
     return ans;
+}
+
+uint64_t mulMod64(uint64_t a, uint64_t b, uint64_t c)
+{
+    __uint128_t ans = a;
+    __uint128_t base = b;
+    __uint128_t c2 = c;
+    __uint128_t res = ans*base;
+    c = res % c2;
+    return c;
+}
+
+uint64_t powMod64(uint64_t a, uint64_t b, uint64_t c)
+{
+    __uint128_t ans = 1;
+    __uint128_t base = a; // a % c
+    __uint128_t c2 = c;
+    while(b)
+    {
+        if(b&1)
+            ans = (ans*base)%c2;
+        base = (base*base)%c2;
+        b >>= 1;
+    }
+    a = ans & 0xffffffffffffffff;
+    return a;
 }
 
 uint64_t mulMod32(uint64_t a, uint64_t b, uint64_t c)

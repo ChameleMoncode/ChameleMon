@@ -8,9 +8,9 @@ uint16_t mask2 = 65535;
 class Counters
 {
 public:
-    int mem; //内存（Byte）
+    int mem; 
     uint8_t *counters;
-    int width; // counter数
+    int width; 
     int counter_w;
     Counters(int WIDTH, int COUNTER_W)
     {
@@ -53,10 +53,9 @@ public:
     BOBHash32 *hash;
     Type type;
     int idx[2];
-    //mem_per_line
     int mem;
     uint32_t threshold;
-    TowerSketch(int w_d, Type _type = CM, uint32_t T = ELE_THRESHOLD, int _init = INIT)//w_d 为一行中四字的个数
+    TowerSketch(int w_d, Type _type = CM, uint32_t T = ELE_THRESHOLD, int _init = INIT)
     {
         mem = w_d * 4;
         threshold = T;
@@ -91,12 +90,10 @@ public:
         uint32_t val0 = line[0].index(idx[0]);
         uint32_t val1 = line[1].index(idx[1]);
         if (val0 < threshold){
-            //cout<<val0<<endl;
             flag = true;
         }
         if (val1 < threshold){      
             flag = true;
-            //cout<<val1<<endl;
         }
         if (val0 != mask1)
             line[0].increment(idx[0]);
